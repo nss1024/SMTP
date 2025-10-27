@@ -3,6 +3,8 @@ package utils;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.net.Socket;
+import java.util.Collections;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -26,7 +28,7 @@ public class SMTPUtils {
     }
 
     public static String getData(String line) {
-        if (line == null || !line.trim().isEmpty()) return "";
+        if (line == null || line.trim().isEmpty()) return "";
         String[] parts = line.split(" ", 2);
         if (parts.length < 2) return "";
         String result = parts[1].trim();
@@ -43,6 +45,16 @@ public class SMTPUtils {
             return line.substring(start + 1, end);
         }
         return "";
+    }
+
+    public static List<SessionState> updateAcceptableStates(List<SessionState> current, SessionState... newStates ){
+        current.clear();
+        Collections.addAll(current, newStates);
+        return current;
+    }
+
+    public static boolean isValidNextState(SessionState s, List<SessionState> validNextStates){
+        return validNextStates.contains(s);
     }
 
 }
