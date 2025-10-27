@@ -20,4 +20,29 @@ public class SMTPUtils {
       }
     }
 
+    public static String getOperation(String line) {
+        if (line == null || line.trim().isEmpty()) return "";
+        return line.split(" ")[0].toUpperCase();
+    }
+
+    public static String getData(String line) {
+        if (line == null || !line.trim().isEmpty()) return "";
+        String[] parts = line.split(" ", 2);
+        if (parts.length < 2) return "";
+        String result = parts[1].trim();
+        result = result.replaceAll("(?i)^TO:", "")
+                .replaceAll("(?i)^FROM:", "")
+                .trim();
+        return result;
+    }
+
+    public static String getEmailAddress(String line) {
+        int start = line.indexOf('<');
+        int end = line.indexOf('>');
+        if (start != -1 && end != -1 && end > start) {
+            return line.substring(start + 1, end);
+        }
+        return "";
+    }
+
 }

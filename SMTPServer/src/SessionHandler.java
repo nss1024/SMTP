@@ -28,13 +28,15 @@ public class SessionHandler implements Runnable{
         try (BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
             String line;
             while ((line = br.readLine()) != null) {
+                logger.log(Level.INFO,line);
+
 
             }
         } catch (IOException e) {
             logger.log(Level.WARNING, "Error reading socket input", e);
         }
-
-
-
     }
+
+
+
 }
