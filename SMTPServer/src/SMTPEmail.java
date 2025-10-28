@@ -21,7 +21,7 @@ public class SMTPEmail {
         return toList;
     }
 
-    public void addToList(String recipientAddress) {
+    public void addToRecipientList(String recipientAddress) {
         if(this.toList==null){
             toList=new ArrayList<>();
         }
