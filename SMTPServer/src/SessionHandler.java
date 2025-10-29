@@ -47,15 +47,11 @@ public class SessionHandler implements Runnable{
 
                     switch (opCode) {
                         case "HELO":
-                            if (!SMTPUtils.isValidNextState(SessionState.HELO, validNextStates)) {
+                            if (SMTPUtils.isValidNextState(SessionState.HELO, validNextStates)) {
+                                handleHELO(socket,writer,clientDomain,currentState,line);
+                            }else{
                                 SMTPUtils.sendMessage(socket, writer, SmtpMessage.BAD_SEQUENCE.getFullText());
-                                break;
                             }
-                            SMTPUtils.sendMessage(socket, writer, SmtpMessage.OK.getFullText());
-                            currentState = SessionState.HELO_RECEIVED;
-                            SMTPUtils.updateAcceptableStates(validNextStates, SessionState.MAIL);
-                            clientDomain = SMTPUtils.getData(line);
-                            logger.log(Level.INFO, "HELO received");
                             break;
                         case "MAIL":
                             if (!SMTPUtils.isValidNextState(SessionState.MAIL, validNextStates)) {
@@ -115,6 +111,14 @@ public class SessionHandler implements Runnable{
         } catch (IOException e) {
             logger.log(Level.WARNING, "Error reading socket input", e);
         }
+    }
+
+    private void handleHELO(Socket s, BufferedWriter w, String clientDomain, SessionState currentState, String data){
+        logger.log(Level.INFO, "HELO received");
+        currentState = SessionState.HELO_RECEIVED;
+        SMTPUtils.updateAcceptableStates(validNextStates, SessionState.MAIL);
+        clientDomain = SMTPUtils.getData(data);
+        SMTPUtils.sendMessage(socket, writer, SmtpMessage.OK.getFullText());
     }
 
 
