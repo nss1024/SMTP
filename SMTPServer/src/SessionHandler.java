@@ -18,9 +18,10 @@ public class SessionHandler implements Runnable{
     private SMTPEmail smtpEmail = new SMTPEmail();
     private String clientDomain;
     private String myDomain = "myserver.com";
-    private boolean receiveData=false;
+    private boolean isReceivingData =false;
     private String opCode;
     private StringBuilder emailBody=new StringBuilder();
+    private boolean quit = false;
 
     SessionHandler(Socket s){
         this.socket=s;
@@ -42,69 +43,71 @@ public class SessionHandler implements Runnable{
             String line;
             while ((line = br.readLine()) != null) {
                 logger.log(Level.INFO, line);
-                if (!receiveData) {
+                if (!isReceivingData) {
                     opCode = SMTPUtils.getOperation(line);
 
                     switch (opCode) {
                         case "HELO":
                             if (SMTPUtils.isValidNextState(SessionState.HELO, validNextStates)) {
-                                handleHELO(socket,writer,clientDomain,currentState,line);
+                                handleHelo(socket,writer,clientDomain,currentState,line);
                             }else{
                                 SMTPUtils.sendMessage(socket, writer, SmtpMessage.BAD_SEQUENCE.getFullText());
                             }
                             break;
                         case "MAIL":
-                            if (!SMTPUtils.isValidNextState(SessionState.MAIL, validNextStates)) {
+                            if (SMTPUtils.isValidNextState(SessionState.MAIL, validNextStates)) {
+                                handleMail(socket,writer,smtpEmail,currentState,line);
+                            }else{
                                 SMTPUtils.sendMessage(socket, writer, SmtpMessage.BAD_SEQUENCE.getFullText());
-                                break;
                             }
-                            String from = SMTPUtils.getEmailAddress(line);
-                            smtpEmail.setFrom(from);
-                            currentState = SessionState.MAIL_FROM_RECEIVED;
-                            SMTPUtils.updateAcceptableStates(validNextStates, SessionState.RCPT);
-                            SMTPUtils.sendMessage(socket, writer, SmtpMessage.OK.getFullText());
-
-                            logger.log(Level.INFO, "MAIL received");
                             break;
                         case "RCPT":
-                            if (!SMTPUtils.isValidNextState(SessionState.RCPT, validNextStates)) {
+                            if (SMTPUtils.isValidNextState(SessionState.RCPT, validNextStates)) {
+                                handleRcpt(socket,writer,smtpEmail,currentState,line);
+                            }else{
                                 SMTPUtils.sendMessage(socket, writer, SmtpMessage.BAD_SEQUENCE.getFullText());
-                                break;
                             }
-                            String to = SMTPUtils.getEmailAddress(line);
-                            smtpEmail.addToRecipientList(to);
-                            currentState = SessionState.RCPT_TO_RECEIVED;
-                            SMTPUtils.updateAcceptableStates(validNextStates, SessionState.RCPT, SessionState.DATA);
-                            SMTPUtils.sendMessage(socket, writer, SmtpMessage.OK.getFullText());
-                            logger.log(Level.INFO, "RCPT received");
                             break;
                         case "DATA":
-                            if (!SMTPUtils.isValidNextState(SessionState.MAIL, validNextStates)) {
+                            if (SMTPUtils.isValidNextState(SessionState.DATA, validNextStates)) {
+                                logger.log(Level.INFO, "DATA received");
+                                SMTPUtils.updateAcceptableStates(validNextStates, SessionState.DATA_COMPLETE);
+                                SMTPUtils.sendMessage(socket, writer, SmtpMessage.START_MAIL_INPUT.getFullText());
+                                isReceivingData =true;
+                            }else{
                                 SMTPUtils.sendMessage(socket, writer, SmtpMessage.BAD_SEQUENCE.getFullText());
-                                break;
                             }
-                            SMTPUtils.updateAcceptableStates(validNextStates, SessionState.DATA_COMPLETE);
-                            SMTPUtils.sendMessage(socket, writer, SmtpMessage.START_MAIL_INPUT.getFullText());
-
-                            logger.log(Level.INFO, "DATA received");
                             break;
                         case "QUIT":
-                            logger.log(Level.INFO, "QUIT received");
+                            if (SMTPUtils.isValidNextState(SessionState.QUIT, validNextStates)) {
+                                logger.log(Level.INFO, "QUIT received");
+                                SMTPUtils.sendMessage(socket,writer,SmtpMessage.CLOSING_TRANSMISSION.getFullText());
+                                closeWriter(writer);
+                                quit=true;
+
+                            }
+                            else{
+                                SMTPUtils.sendMessage(socket, writer, SmtpMessage.BAD_SEQUENCE.getFullText());
+                            }
+
                             break;
                         default:
                             SMTPUtils.sendMessage(socket, writer, SmtpMessage.SYNTAX_ERROR.getFullText());
                             break;
                     }
                 }
-                if(receiveData){
+                if(isReceivingData){
                     System.out.println("receive data");
-                    if(!line.equals("\r\n.\r\n")){
-                        emailBody.append(line);
+                    if(!line.equals(".")){
+                        emailBody.append(line).append("\r\n");
                     }
                     smtpEmail.setEmailMessage(emailBody.toString());
                     currentState = SessionState.DATA_COMPLETE;
                     SMTPUtils.sendMessage(socket, writer, SmtpMessage.MSG_RECEIVED.getFullText());
-                    break;
+                    isReceivingData =false;
+                }
+                if(quit){
+                    return;
                 }
             }
 
@@ -113,14 +116,42 @@ public class SessionHandler implements Runnable{
         }
     }
 
-    private void handleHELO(Socket s, BufferedWriter w, String clientDomain, SessionState currentState, String data){
+    private void handleHelo(Socket s, BufferedWriter w, String clientDomain, SessionState currentState, String data){
         logger.log(Level.INFO, "HELO received");
-        currentState = SessionState.HELO_RECEIVED;
+        this.currentState = SessionState.HELO_RECEIVED;
         SMTPUtils.updateAcceptableStates(validNextStates, SessionState.MAIL);
-        clientDomain = SMTPUtils.getData(data);
+        this.clientDomain = SMTPUtils.getData(data);
         SMTPUtils.sendMessage(socket, writer, SmtpMessage.OK.getFullText());
     }
 
+    private void handleMail(Socket s, BufferedWriter w, SMTPEmail smtpEmail, SessionState currentState, String data){
+        logger.log(Level.INFO, "MAIL received");
+        String from = SMTPUtils.getEmailAddress(data);
+        smtpEmail.setFrom(from);
+        this.currentState = SessionState.MAIL_FROM_RECEIVED;
+        SMTPUtils.updateAcceptableStates(validNextStates, SessionState.RCPT);
+        SMTPUtils.sendMessage(socket, writer, SmtpMessage.OK.getFullText());
+    }
 
+    private void handleRcpt(Socket s, BufferedWriter w, SMTPEmail smtpEmail, SessionState currentState, String data){
+        String to = SMTPUtils.getEmailAddress(data);
+        smtpEmail.addToRecipientList(to);
+        this.currentState = SessionState.RCPT_TO_RECEIVED;
+        SMTPUtils.updateAcceptableStates(validNextStates, SessionState.RCPT, SessionState.DATA);
+        SMTPUtils.sendMessage(socket, writer, SmtpMessage.OK.getFullText());
+        logger.log(Level.INFO, "RCPT received");
+    }
+
+    private void closeWriter(BufferedWriter writer){
+        if (writer != null) {
+            try {
+                writer.flush();
+                writer.close();
+            } catch (IOException e) {
+                logger.log(Level.WARNING, "Failed to close BufferedWriter", e);
+            }
+        }
+
+    }
 
 }

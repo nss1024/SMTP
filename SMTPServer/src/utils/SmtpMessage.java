@@ -6,6 +6,7 @@ public enum SmtpMessage {
     GREET(220, "myserver.com Service Ready"),
     OK(250, "OK"),
     MSG_RECEIVED(250, "Message accepted"),
+    CLOSING_TRANSMISSION(221,"myserver.com Service closing transmission channel"),
 
     // 3xx Intermediate
     START_MAIL_INPUT(354, "End data with <CR><LF>.<CR><LF>"),
@@ -17,6 +18,7 @@ public enum SmtpMessage {
     SYNTAX_ERROR(500, "Syntax error, command unrecognized"),
     BAD_SEQUENCE(503, "Bad sequence of commands"),
     MAILBOX_UNAVAILABLE(550, "Requested action not taken: mailbox unavailable");
+
 
     private final int code;
     private final String text;
