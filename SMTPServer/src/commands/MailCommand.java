@@ -11,7 +11,7 @@ public class MailCommand implements SmtpCommand{
     }
 
     @Override
-    public void execute(String line) throws IOException {
+    public void execute(SessionContext sc, String line) throws IOException {
 
     }
 }

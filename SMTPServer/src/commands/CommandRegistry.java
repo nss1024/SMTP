@@ -13,7 +13,7 @@ public class CommandRegistry {
 
     public CommandRegistry(Socket socket, BufferedWriter writer, List<SessionState> validNextStates, SessionState currentState, String myDomain){
 
-        commands.put("HELO",new HeloCommand(socket,writer,validNextStates,currentState,myDomain));
+        commands.put("HELO",new HeloCommand());
 
 
     }
