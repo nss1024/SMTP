@@ -1,3 +1,5 @@
+package commands;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +45,7 @@ public class SMTPEmail {
             recipients = String.join(" ", toList);
         }
 
-        return "SMTPEmail{" +
+        return "commands.SMTPEmail{" +
                 "from='" + from + '\'' +
                 ", toList=" + recipients +
                 ", emailMessage='" + emailMessage + '\'' +

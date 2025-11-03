@@ -4,7 +4,9 @@ import utils.SessionState;
 
 import java.io.BufferedWriter;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.List;
+
 
 public class SessionContext {
 
@@ -14,6 +16,9 @@ public class SessionContext {
     private SessionState currentState;
     private String myDomain;
     private String clientDomain;
+    private SMTPEmail smtpEmail;
+    private boolean isReceivingData;
+    private boolean isQuitting;
 
     private SessionContext(){}
 
@@ -21,6 +26,10 @@ public class SessionContext {
         this.socket = socket;
         this.writer = writer;
         this.myDomain = myDomain;
+        this.isReceivingData=false;
+        this.isQuitting=false;
+        this.smtpEmail = new SMTPEmail();
+        validNextStates=new ArrayList<>();
     }
 
    public List<SessionState> getValidNextStates() {
@@ -57,5 +66,25 @@ public class SessionContext {
 
     public String getMyDomain() {
         return myDomain;
+    }
+
+    public SMTPEmail getSmtpEmail() {
+        return smtpEmail;
+    }
+
+    public boolean isReceivingData() {
+        return isReceivingData;
+    }
+
+    public void setReceivingData(boolean receivingData) {
+        isReceivingData = receivingData;
+    }
+
+    public boolean isQuitting() {
+        return isQuitting;
+    }
+
+    public void setQuitting(boolean quitting) {
+        isQuitting = quitting;
     }
 }

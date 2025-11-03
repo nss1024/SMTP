@@ -8,22 +8,16 @@ import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class MailCommand implements SmtpCommand{
+public class RcptCommand implements SmtpCommand{
     private Logger logger = Logger.getLogger(this.getClass().getSimpleName());
-
-
-    public MailCommand(){
-
-    }
 
     @Override
     public void execute(SessionContext sc, String line) throws IOException {
-        logger.log(Level.INFO, "MAIL received");
-        String from = SMTPUtils.getEmailAddress(line);
-        sc.getSmtpEmail().setFrom(from);
-        sc.setCurrentState(SessionState.MAIL_FROM_RECEIVED);
-        SMTPUtils.updateAcceptableStates(sc.getValidNextStates(), SessionState.RCPT);
+        String to = SMTPUtils.getEmailAddress(line);
+        sc.getSmtpEmail().addToRecipientList(to);
+        sc.setCurrentState(SessionState.RCPT_TO_RECEIVED);
+        SMTPUtils.updateAcceptableStates(sc.getValidNextStates(), SessionState.RCPT, SessionState.DATA);
         SMTPUtils.sendMessage(sc.getSocket(), sc.getWriter(), SmtpMessage.OK.getFullText());
-
+        logger.log(Level.INFO, "RCPT received");
     }
 }
