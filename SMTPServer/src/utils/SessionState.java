@@ -6,6 +6,7 @@ public enum SessionState {
     MAIL,
     RCPT,
     DATA,
+    STARTTLS,
     HELO_RECEIVED,        // HELO/EHLO successfully received
     MAIL_FROM_RECEIVED,   // MAIL FROM command received
     RCPT_TO_RECEIVED,     // at least one RCPT TO received

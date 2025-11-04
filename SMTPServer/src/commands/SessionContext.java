@@ -2,7 +2,7 @@ package commands;
 
 import utils.SessionState;
 
-import java.io.BufferedWriter;
+import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +11,7 @@ import java.util.List;
 public class SessionContext {
 
     private Socket socket;
+    private BufferedReader reader;
     private BufferedWriter writer;
     private List<SessionState> validNextStates;
     private SessionState currentState;
@@ -22,8 +23,9 @@ public class SessionContext {
 
     private SessionContext(){}
 
-    public SessionContext(Socket socket, BufferedWriter writer, String myDomain) {
+    public SessionContext(Socket socket,BufferedReader reader, BufferedWriter writer, String myDomain) {
         this.socket = socket;
+        this.reader = reader;
         this.writer = writer;
         this.myDomain = myDomain;
         this.isReceivingData=false;
@@ -87,4 +89,28 @@ public class SessionContext {
     public void setQuitting(boolean quitting) {
         isQuitting = quitting;
     }
+
+    public BufferedReader getReader() {
+        return reader;
+    }
+
+    public void setSocket(Socket socket) {
+        this.socket = socket;
+    }
+
+    public void setReader(BufferedReader reader) {
+        this.reader = reader;
+    }
+
+    public void setWriter(BufferedWriter writer) {
+        this.writer = writer;
+    }
+
+    public void upgradeConnection(Socket newSocket) throws IOException {
+        this.socket = newSocket;
+        this.reader = new BufferedReader(new InputStreamReader(newSocket.getInputStream()));
+        this.writer = new BufferedWriter(new OutputStreamWriter(newSocket.getOutputStream()));
+    }
+
+
 }

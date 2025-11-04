@@ -20,6 +20,7 @@ public enum CommandRegistry {
         commands.put("RCPT",new RcptCommand());
         commands.put("DATA",new DataCommand());
         commands.put("QUIT",new QuitCommand());
+        commands.put("STARTTLS",new StartTlsCommand());
     }
 
 

@@ -7,13 +7,14 @@ public enum SmtpMessage {
     OK(250, "OK"),
     MSG_RECEIVED(250, "Message accepted"),
     CLOSING_TRANSMISSION(221,"myserver.com Service closing transmission channel"),
+    READY_FOR_TLS(220,"Ready to start TLS"),
 
     // 3xx Intermediate
     START_MAIL_INPUT(354, "End data with <CR><LF>.<CR><LF>"),
 
     // 4xx Temporary failures
     BUSY(421, "Service not available, closing connection"),
-
+    TLS_FAILURE(454, "TLS not available due to temporary reason\r\n"),
     // 5xx Permanent failures
     SYNTAX_ERROR(500, "Syntax error, command unrecognized"),
     BAD_SEQUENCE(503, "Bad sequence of commands"),

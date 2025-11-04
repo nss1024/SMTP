@@ -14,6 +14,7 @@ public class SessionHandler implements Runnable{
     private final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
     private Socket socket=null;
     private BufferedWriter writer;
+    private BufferedReader reader;
     private SessionContext sc;
     private String myDomain = "myserver.com";
     private String opCode;
@@ -27,19 +28,20 @@ public class SessionHandler implements Runnable{
     @Override
     public void run() {
         try {
+            reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        sc = new SessionContext(socket,writer,myDomain);
+        sc = new SessionContext(socket,reader,writer,myDomain);
         SMTPUtils.sendMessage(socket,writer, SmtpMessage.GREET.getFullText());
         sc.setCurrentState(SessionState.INIT);
         sc.getValidNextStates().add(SessionState.HELO);
 
 
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()))) {
+        try {
             String line;
-            while ((line = br.readLine()) != null) {
+            while ((line = sc.getReader().readLine()) != null) {
                 logger.log(Level.INFO, line);
                 if(sc.isReceivingData()){
                     if(!line.equals(".")){
@@ -69,11 +71,15 @@ public class SessionHandler implements Runnable{
                     return;
                 }
             }
-            if (!socket.isClosed()) {
-                socket.close();
-            }
         } catch (IOException e) {
             logger.log(Level.WARNING, "Error reading socket input", e);
+        } finally{
+            try {
+                sc.getReader().close();
+                socket.close();
+            }catch(IOException e){
+                logger.log(Level.WARNING,"Failed to close reader / socket!");
+            }
         }
 
 
