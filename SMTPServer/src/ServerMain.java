@@ -39,8 +39,8 @@ public class ServerMain {
     }
 
     private void startThreadPool(int threadCount){
-        tp= new ThreadPoolExecutor(numberOfThreads,
-                numberOfThreads,
+        tp= new ThreadPoolExecutor(threadCount,
+                threadCount,
                 30L,
                 TimeUnit.SECONDS,
                 new ArrayBlockingQueue<>(100),
