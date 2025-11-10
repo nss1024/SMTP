@@ -5,8 +5,10 @@ import commands.SMTPEmail;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.logging.Logger;
 
 public class MdaMain {
+    private Logger logger = Logger.getLogger(this.getClass().getSimpleName());
     private ThreadPoolExecutor mdathreadPool;
     private int noOfthreads = 2;
 
@@ -29,7 +31,7 @@ public class MdaMain {
     }
 
     public void saveEmail(SMTPEmail email){
-        
+
     }
 
 }

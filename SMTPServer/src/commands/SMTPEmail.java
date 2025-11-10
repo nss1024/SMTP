@@ -38,6 +38,20 @@ public class SMTPEmail {
         this.emailMessage = emailMessage;
     }
 
+    public String toEmlFormat() {
+        String recipients = (toList != null && !toList.isEmpty())
+                ? String.join(", ", toList)
+                : "";
+
+        StringBuilder sb = new StringBuilder();
+        sb.append("From: ").append(from).append("\r\n");
+        sb.append("To: ").append(recipients).append("\r\n");
+        sb.append(emailMessage).append("\r\n");
+
+        return sb.toString();
+    }
+
+
     @Override
     public String toString() {
         String recipients = "";
