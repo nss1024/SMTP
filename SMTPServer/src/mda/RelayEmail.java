@@ -38,6 +38,7 @@ public class RelayEmail implements Runnable{
 
         try{
             Files.write(fullPath,smtpEmail.toEmlFormat().getBytes(StandardCharsets.UTF_8));
+            Files.write(metaPath,emailMetaData.toFileFormat().getBytes(StandardCharsets.UTF_8));
 
 
         } catch (IOException e) {
