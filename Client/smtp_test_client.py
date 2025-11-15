@@ -1,18 +1,27 @@
-import socket
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 
-HOST = "127.0.0.1"   # localhost
-PORT = 8029          # your SMTP server port
+# SMTP server config
+HOST = "127.0.0.1"
+PORT = 8029  # or your server port
 
-def test_smtp_connection():
-    with socket.create_connection((HOST, PORT), timeout=5) as sock:
-        # receive greeting
-        greeting = sock.recv(1024).decode("utf-8", errors="replace")
-        print("Server greeting:", greeting)
+# Email info
+sender = "alice@example.com"
+recipients = ["bob@example.com"]
+subject = "Test Email"
+body = "Hello Bob, this is a test email from Python client."
 
-        # optionally send a basic HELO to see if server stays connected
-        sock.sendall(b"HELO client.example.com\r\n")
-        response = sock.recv(1024).decode("utf-8", errors="replace")
-        print("Response to HELO:", response)
+# Create MIME message
+msg = MIMEMultipart()
+msg["From"] = sender
+msg["To"] = ", ".join(recipients)
+msg["Subject"] = subject
+msg.attach(MIMEText(body, "plain"))
 
-if __name__ == "__main__":
-    test_smtp_connection()
+# Connect and send email
+with smtplib.SMTP(HOST, PORT) as server:
+    server.set_debuglevel(1)  # prints full conversation
+    server.ehlo()
+    server.sendmail(sender, recipients, msg.as_string())
+    server.quit()

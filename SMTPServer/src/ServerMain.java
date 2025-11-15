@@ -1,3 +1,5 @@
+import mda.MdaMain;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -13,9 +15,11 @@ public class ServerMain {
     private int failedConnectionsCounter=0;
     private final int FAILED_CONNECTIONS_TOLERANCE = 10;
     private int numberOfThreads =2;
+    MdaMain mdaMain;
 
-    ServerMain(int port){
+    ServerMain(int port,MdaMain mdaMain){
         this.listeningPort=port;
+        this.mdaMain=mdaMain;
     }
 
     private void startServer(){
@@ -55,7 +59,7 @@ public class ServerMain {
             public void run() {
                 try {
                     Socket soc = serverSocket.accept();
-                    tp.submit(new SessionHandler(soc));
+                    tp.submit(new SessionHandler(soc,mdaMain));
 
                 } catch (IOException e) {
                     logger.log(Level.WARNING,"Failed to accept connection request!" );

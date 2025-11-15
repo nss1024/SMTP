@@ -1,6 +1,7 @@
 import commands.CommandRegistry;
 import commands.SessionContext;
 import commands.SmtpCommand;
+import mda.MdaMain;
 import utils.SMTPUtils;
 import utils.SessionState;
 import utils.SmtpMessage;
@@ -19,10 +20,12 @@ public class SessionHandler implements Runnable{
     private String myDomain = "myserver.com";
     private String opCode;
     private StringBuilder emailBody=new StringBuilder();
+    MdaMain mdaMain;
 
 
-    SessionHandler(Socket s){
+    SessionHandler(Socket s,MdaMain mdaMain){
         this.socket=s;
+        this.mdaMain=mdaMain;
     }
 
     @Override
@@ -49,6 +52,7 @@ public class SessionHandler implements Runnable{
                     }else {
                         sc.getSmtpEmail().setEmailMessage(emailBody.toString());
                         sc.setCurrentState(SessionState.DATA_COMPLETE);
+                        mdaMain.saveEmail(sc.getSmtpEmail());
                         SMTPUtils.sendMessage(socket, writer, SmtpMessage.MSG_RECEIVED.getFullText());
                         sc.setReceivingData(false);
                     }
