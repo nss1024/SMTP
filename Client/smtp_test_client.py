@@ -8,7 +8,7 @@ PORT = 8029  # or your server port
 
 # Email info
 sender = "alice@example.com"
-recipients = ["bob@example.com"]
+recipients = ["bob@example.com","simon@myserver.com"]
 subject = "Test Email"
 body = "Hello Bob, this is a test email from Python client."
 

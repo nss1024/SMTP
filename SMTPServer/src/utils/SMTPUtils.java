@@ -57,4 +57,31 @@ public class SMTPUtils {
         return validNextStates.contains(s);
     }
 
+    public static boolean validateEmailAddress(String address){
+        if (address == null) return false;
+
+        address = address.trim();
+        if (address.isEmpty()) return false;
+
+        int at = address.indexOf('@');
+        if (at <= 0) return false;                     // no local part
+        if (at == address.length() - 1) return false; // no domain
+
+        // multiple @
+        if (address.indexOf('@', at + 1) != -1) return false;
+
+        // no spaces allowed in SMTP addresses
+        if (address.contains(" ")) return false;
+
+        String domain = address.substring(at + 1);
+
+        // domain must contain at least one dot (recommended)
+        if (!domain.contains(".")) return false;
+
+        // cannot start or end with dot
+        if (domain.startsWith(".") || domain.endsWith(".")) return false;
+
+        return true;
+    }
+
 }

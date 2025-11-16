@@ -16,9 +16,11 @@ public enum SmtpMessage {
     BUSY(421, "Service not available, closing connection"),
     TLS_FAILURE(454, "TLS not available due to temporary reason\r\n"),
     // 5xx Permanent failures
+    INVALID_RECIPIENT_SYNTAX(501,"Invalid recipient syntax"),
     SYNTAX_ERROR(500, "Syntax error, command unrecognized"),
     BAD_SEQUENCE(503, "Bad sequence of commands"),
-    MAILBOX_UNAVAILABLE(550, "Requested action not taken: mailbox unavailable");
+    MAILBOX_UNAVAILABLE(550, "Requested action not taken: mailbox unavailable"),
+    BAD_SENDER_ADDRESS(550, "Bad sender address");
 
 
     private final int code;

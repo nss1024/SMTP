@@ -1,5 +1,6 @@
 package commands;
 
+import mda.EmailMetaData;
 import utils.SessionState;
 
 import java.io.*;
@@ -20,6 +21,7 @@ public class SessionContext {
     private SMTPEmail smtpEmail;
     private boolean isReceivingData;
     private boolean isQuitting;
+    private EmailMetaData emailMetaData;
 
     private SessionContext(){}
 
@@ -112,5 +114,11 @@ public class SessionContext {
         this.writer = new BufferedWriter(new OutputStreamWriter(newSocket.getOutputStream()));
     }
 
+    public EmailMetaData getEmailMetaData() {
+        return emailMetaData;
+    }
 
+    public void setEmailMetaData(EmailMetaData emailMetaData) {
+        this.emailMetaData = emailMetaData;
+    }
 }

@@ -19,13 +19,14 @@ public class RelayEmail implements Runnable{
     private final String fileExtension = ".eml";
     private final String metaExtension = ".meta";
     private Path relayDirectory;
-    private Path metaDirectiry;
+    private Path metaDirectory;
     private  EmailMetaData emailMetaData;
 
     RelayEmail(SMTPEmail email, EmailMetaData emailMetaData, Path relayDirectory, Path metaDirectiry){
         this.smtpEmail=email;
         this.relayDirectory=relayDirectory;
         this.emailMetaData = emailMetaData;
+        this.metaDirectory=metaDirectiry;
     }
 
     @Override
@@ -34,7 +35,7 @@ public class RelayEmail implements Runnable{
         fileName = fileUudi +fileExtension;
         metaName = fileUudi + metaExtension;
         Path fullPath = relayDirectory.resolve(fileName);
-        Path metaPath = metaDirectiry.resolve(metaName);
+        Path metaPath = metaDirectory.resolve(metaName);
 
         try{
             Files.write(fullPath,smtpEmail.toEmlFormat().getBytes(StandardCharsets.UTF_8));

@@ -7,6 +7,8 @@ import utils.SessionState;
 import utils.SmtpMessage;
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -52,7 +54,23 @@ public class SessionHandler implements Runnable{
                     }else {
                         sc.getSmtpEmail().setEmailMessage(emailBody.toString());
                         sc.setCurrentState(SessionState.DATA_COMPLETE);
-                        mdaMain.saveEmail(sc.getSmtpEmail());
+
+                        List<String> allRecipients = new ArrayList<>(sc.getSmtpEmail().getToList());
+                        List<String> externalRecipients = new ArrayList<>();
+
+                        for (String rcpt : allRecipients) {
+                            if (rcpt.endsWith("@" + myDomain)) {
+                                mdaMain.saveEmail(sc.getSmtpEmail()); // local delivery per address
+                            } else {
+                                externalRecipients.add(rcpt);
+                            }
+                        }
+
+                        if (!externalRecipients.isEmpty()) {
+                            sc.getSmtpEmail().setToList(externalRecipients); // remove local addresses
+                            mdaMain.relayEmail(sc.getSmtpEmail(), sc.getEmailMetaData());
+                        }
+
                         SMTPUtils.sendMessage(socket, writer, SmtpMessage.MSG_RECEIVED.getFullText());
                         sc.setReceivingData(false);
                     }

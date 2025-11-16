@@ -14,10 +14,13 @@ public class MdaMain {
     private ThreadPoolExecutor mdathreadPool;
     private int noOfthreads = 2;
     private Path savePath;
-
+    private Path relayPath;
+    private Path metaPath;
 
     public MdaMain(){
         this.savePath= Paths.get("C:", "dev", "FileStore", "local");
+        this.relayPath= Paths.get("C:", "dev", "FileStore", "relay");
+        this.metaPath= Paths.get("C:", "dev", "FileStore", "relay","meta");
     }
 
 
@@ -36,6 +39,10 @@ public class MdaMain {
 
     public void saveEmail(SMTPEmail email){
             mdathreadPool.submit(new SaveEmail(email,savePath));
+    }
+
+    public void relayEmail(SMTPEmail email, EmailMetaData emailMetaData){
+        mdathreadPool.submit(new RelayEmail(email,emailMetaData,relayPath,metaPath));
     }
 
 }

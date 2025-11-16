@@ -20,6 +20,10 @@ public class MailCommand implements SmtpCommand{
     public void execute(SessionContext sc, String line) throws IOException {
         logger.log(Level.INFO, "MAIL received");
         String from = SMTPUtils.getEmailAddress(line);
+        if(!SMTPUtils.validateEmailAddress(from)){
+            SMTPUtils.sendMessage(sc.getSocket(),sc.getWriter(),SmtpMessage.BAD_SENDER_ADDRESS.getFullText());
+            return;
+        }
         sc.getSmtpEmail().setFrom(from);
         sc.setCurrentState(SessionState.MAIL_FROM_RECEIVED);
         SMTPUtils.updateAcceptableStates(sc.getValidNextStates(), SessionState.RCPT);

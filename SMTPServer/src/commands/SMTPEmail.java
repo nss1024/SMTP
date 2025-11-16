@@ -1,7 +1,7 @@
 package commands;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.Array;
+import java.util.*;
 
 public class SMTPEmail {
 
@@ -23,6 +23,10 @@ public class SMTPEmail {
         return toList;
     }
 
+    public void setToList(List<String> toList) {
+        this.toList = toList;
+    }
+
     public void addToRecipientList(String recipientAddress) {
         if(this.toList==null){
             toList=new ArrayList<>();
@@ -36,6 +40,15 @@ public class SMTPEmail {
 
     public void setEmailMessage(String emailMessage) {
         this.emailMessage = emailMessage;
+    }
+
+    public List<String> getrecipientDomains(){
+        Set <String> rcptDomainSet = new HashSet<>();
+        for(String rcpt:toList){
+            String rcptDomain = rcpt.split("@")[1];
+            rcptDomainSet.add(rcptDomain);
+        }
+        return new ArrayList<String>(rcptDomainSet);
     }
 
     public String toEmlFormat() {

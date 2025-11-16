@@ -14,6 +14,11 @@ public class DataCommand implements SmtpCommand{
 
     @Override
     public void execute(SessionContext sc, String line) throws IOException {
+        //check to see if there is at least one recipient before committing to data transfer.
+        if (sc.getSmtpEmail().getToList().isEmpty()) {
+            SMTPUtils.sendMessage(sc.getSocket(),sc.getWriter(), SmtpMessage.BAD_SEQUENCE.getFullText());
+            return;
+        }
         logger.log(Level.INFO, "DATA received");
         sc.setReceivingData(true);
         SMTPUtils.updateAcceptableStates(sc.getValidNextStates(), SessionState.DATA_COMPLETE);
