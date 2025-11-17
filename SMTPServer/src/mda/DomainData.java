@@ -1,3 +1,8 @@
+/*This class holds all data relating to a domain name, that is
+ *all data relating to gmail.com for recipient john.doe1@gmail.com
+ * including all mx records.
+ */
+
 package mda;
 
 import java.util.ArrayList;
@@ -7,6 +12,8 @@ import java.util.List;
 public class DomainData {
     private String domainName;
     private List<MxRecordData> mxRecordDataList=new ArrayList<>();
+
+    public DomainData(){}
 
     public DomainData(String name, MxRecordData... mxRecordData){
         this.domainName=name;
@@ -28,6 +35,23 @@ public class DomainData {
 
         }
         return sb.toString();
+    }
+
+    public void setDomainName(String domainName) {
+        this.domainName = domainName;
+    }
+
+    public void addMxRecord(MxRecordData mxRecord){
+        mxRecordDataList.add(mxRecord);
+    }
+
+    public MxRecordData getMxRecordDataByName(String domainName){
+        for(MxRecordData m : mxRecordDataList){
+            if (m.getHostname().equals(domainName)){
+                return m;
+            }
+        }
+        return null;
     }
 
 }

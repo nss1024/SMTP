@@ -7,7 +7,5 @@ public class Main {
         mdaMain.start();
         ServerMain serverMain = new ServerMain(8029,mdaMain);
         serverMain.start();
-
-
     }
 }

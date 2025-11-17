@@ -1,8 +1,13 @@
+/*This class holds all data relating to a single mx record
+ *That is the domain name itself i.e. alt2.gmail-smtp-in.l.google.com (without the trailing dot)
+ * as well as all addresses retrieved for that record i.e.  142.250.147.26
+ * A number of these records is held in a DomainData
+ */
+
 package mda;
 
 import java.net.InetSocketAddress;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class MxRecordData {
@@ -11,10 +16,10 @@ public class MxRecordData {
     private int priority;
     private List<InetSocketAddress> addresses=new ArrayList<>(); // each IP:25
 
-    public MxRecordData(String hostname, int priority, InetSocketAddress... addr){
+    public MxRecordData(String hostname, int priority){
         this.hostname=hostname;
         this.priority=priority;
-        this.addresses.addAll(Arrays.asList(addr));
+
 
     }
 
@@ -44,4 +49,15 @@ public class MxRecordData {
         return sb.toString();
     }
 
+    public void setHostname(String hostname) {
+        this.hostname = hostname;
+    }
+
+    public void setPriority(int priority) {
+        this.priority = priority;
+    }
+
+    public void addInetSockeAddress(String address){
+        addresses.add(new InetSocketAddress(address,smtpPort));
+    }
 }
