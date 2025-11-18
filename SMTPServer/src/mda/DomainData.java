@@ -47,7 +47,7 @@ public class DomainData {
 
     public MxRecordData getMxRecordDataByName(String domainName){
         for(MxRecordData m : mxRecordDataList){
-            if (m.getHostname().equals(domainName)){
+            if (m.getHostname().equalsIgnoreCase(domainName)){
                 return m;
             }
         }

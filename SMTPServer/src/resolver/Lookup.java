@@ -1,4 +1,4 @@
-/*Runs a thread pool to perform   
+/*Runs a thread pool to perform
  *
  */
 
@@ -8,6 +8,7 @@ import mda.DomainData;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.logging.Logger;
 
 public class Lookup {
@@ -23,17 +24,16 @@ public class Lookup {
         lookupThreadPool= Executors.newFixedThreadPool(numberOfthreads);
     }
 
-    public void lookupMXRecord(String domainName){
+    public Future<DomainData> lookupMXRecord(String domainName){
         if(lookupThreadPool!=null){
-            lookupThreadPool.submit(new MXLookup(new DomainData(),domainName));
+            return lookupThreadPool.submit(new DomainResolver(domainName));
         }
+        return null;
     }
 
-    public void lookupDNSRecord(String domainName){
-        if(lookupThreadPool!=null){
-            lookupThreadPool.submit(new DNSLookup(domainName));
+    public void shutdown() {
+        if (lookupThreadPool != null) {
+            lookupThreadPool.shutdown();
         }
     }
-
-
 }

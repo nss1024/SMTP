@@ -42,7 +42,7 @@ public class MxRecordData {
     public String getStringAddress(){
         StringBuilder sb = new StringBuilder();
         for(InetSocketAddress i:addresses){
-            sb.append(i.getAddress());
+            sb.append(i.getAddress().getHostAddress());
             sb.append("\t");
 
         }
