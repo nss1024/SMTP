@@ -1,6 +1,7 @@
 package mda;
 
 import commands.SMTPEmail;
+import resolver.Lookup;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -16,6 +17,7 @@ public class MdaMain {
     private Path savePath;
     private Path relayPath;
     private Path metaPath;
+    private Lookup lookup;
 
     public MdaMain(){
         this.savePath= Paths.get("C:", "dev", "FileStore", "local");
@@ -41,8 +43,12 @@ public class MdaMain {
             mdathreadPool.submit(new SaveEmail(email,savePath));
     }
 
+    public void setLookup(Lookup lookup) {
+        this.lookup = lookup;
+    }
+
     public void relayEmail(SMTPEmail email, EmailMetaData emailMetaData){
-        mdathreadPool.submit(new RelayEmail(email,emailMetaData,relayPath,metaPath));
+        mdathreadPool.submit(new RelayEmail(email,emailMetaData,lookup,relayPath,metaPath));
     }
 
 }

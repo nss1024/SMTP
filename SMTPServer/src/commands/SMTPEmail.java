@@ -42,7 +42,7 @@ public class SMTPEmail {
         this.emailMessage = emailMessage;
     }
 
-    public List<String> getrecipientDomains(){
+    public List<String> getRecipientDomains(){
         Set <String> rcptDomainSet = new HashSet<>();
         for(String rcpt:toList){
             String rcptDomain = rcpt.split("@")[1];

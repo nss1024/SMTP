@@ -19,6 +19,10 @@ public class EmailMetaData {
         return destinations;
     }
 
+    public void addDomain(DomainData domainData){
+        destinations.add(domainData);
+    }
+
     public String toFileFormat(){
         StringBuilder sb = new StringBuilder();
         sb.append("{"+emailId+" \n");

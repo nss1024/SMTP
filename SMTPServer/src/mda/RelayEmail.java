@@ -1,11 +1,13 @@
 package mda;
 
 import commands.SMTPEmail;
+import resolver.Lookup;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -21,12 +23,14 @@ public class RelayEmail implements Runnable{
     private Path relayDirectory;
     private Path metaDirectory;
     private  EmailMetaData emailMetaData;
+    private Lookup lookup;
 
-    RelayEmail(SMTPEmail email, EmailMetaData emailMetaData, Path relayDirectory, Path metaDirectiry){
+    RelayEmail(SMTPEmail email, EmailMetaData emailMetaData,Lookup lookup, Path relayDirectory, Path metaDirectiry){
         this.smtpEmail=email;
         this.relayDirectory=relayDirectory;
         this.emailMetaData = emailMetaData;
         this.metaDirectory=metaDirectiry;
+        this.lookup=lookup;
     }
 
     @Override
@@ -54,4 +58,12 @@ public class RelayEmail implements Runnable{
             logger.log(Level.WARNING,"Failed to save meta data to disk! "+e.getMessage());
         }
     }
+
+    private void getDomains(){
+        List<String> domains = smtpEmail.getRecipientDomains();
+        for(String dom:domains){
+            emailMetaData.addDomain((DomainData) lookup.lookupMXRecord(dom));
+        }
+    }
+
 }
