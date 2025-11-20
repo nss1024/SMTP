@@ -19,6 +19,7 @@ public class MdaMain {
     private Path metaPath;
     private Lookup lookup;
 
+
     public MdaMain(){
         this.savePath= Paths.get("C:", "dev", "FileStore", "local");
         this.relayPath= Paths.get("C:", "dev", "FileStore", "relay");
@@ -37,13 +38,15 @@ public class MdaMain {
 
     public void start(){
         startThreadPool(this.noOfthreads);
+        lookup=new Lookup();
+        lookup.start();
     }
 
     public void saveEmail(SMTPEmail email){
             mdathreadPool.submit(new SaveEmail(email,savePath));
     }
 
-    public void setLookup(Lookup lookup) {
+    public void setLookup() {
         this.lookup = lookup;
     }
 
