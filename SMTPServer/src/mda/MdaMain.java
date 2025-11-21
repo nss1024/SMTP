@@ -41,7 +41,7 @@ public class MdaMain {
         lookup=new Lookup();
         lookup.start();
     }
-
+    //TODO: each domain shoudl have it's own subdir in savePath, implement multi domain
     public void saveEmail(SMTPEmail email){
             mdathreadPool.submit(new SaveEmail(email,savePath));
     }

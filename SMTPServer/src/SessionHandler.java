@@ -20,6 +20,7 @@ public class SessionHandler implements Runnable{
     private BufferedReader reader;
     private SessionContext sc;
     private String myDomain = "myserver.com";
+    private List<String> localDomains;
     private String opCode;
     private StringBuilder emailBody=new StringBuilder();
     MdaMain mdaMain;
@@ -32,6 +33,7 @@ public class SessionHandler implements Runnable{
 
     @Override
     public void run() {
+        loadDummyDomains();
         try {
             reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
@@ -59,10 +61,12 @@ public class SessionHandler implements Runnable{
                         List<String> externalRecipients = new ArrayList<>();
 
                         for (String rcpt : allRecipients) {
-                            if (rcpt.endsWith("@" + myDomain)) {
-                                mdaMain.saveEmail(sc.getSmtpEmail()); // local delivery per address
-                            } else {
-                                externalRecipients.add(rcpt);
+                            for(String domain:localDomains) {//cjeck for multiple local domains
+                                if (rcpt.endsWith("@" + domain)) {
+                                    mdaMain.saveEmail(sc.getSmtpEmail()); // local delivery per address
+                                } else {
+                                    externalRecipients.add(rcpt);
+                                }
                             }
                         }
 
@@ -103,9 +107,15 @@ public class SessionHandler implements Runnable{
                 logger.log(Level.WARNING,"Failed to close reader / socket!");
             }
         }
+    }
 
-
-
+    //for testing only, data will come from either a config file or database
+    private void loadDummyDomains(){
+        localDomains = new ArrayList<>();
+        localDomains.add("myEmails.com");
+        localDomains.add("norbEmail.com");
+        localDomains.add("jucEmail.com");
 
     }
+
 }
