@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.Future;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -61,10 +62,16 @@ public class RelayEmail implements Runnable{
 
     private void getDomains(){
         List<String> domains = smtpEmail.getRecipientDomains();
-        for(String dom:domains){
-            emailMetaData.addDomain((DomainData) lookup.lookupMXRecord(dom));
+        for (String dom : domains) {
+            Future<DomainData> future = lookup.lookupMXRecord(dom);
+            try {
+                DomainData dd = future.get();
+                emailMetaData.addDomain(dd);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-        System.out.println("Email metadata: "+emailMetaData.toFileFormat());
+        System.out.println("Email metadata: "+ emailMetaData.toFileFormat());
     }
 
 }

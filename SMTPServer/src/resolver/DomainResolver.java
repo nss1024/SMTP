@@ -53,23 +53,26 @@ public class DomainResolver implements Callable<DomainData> {
     }
 
     //get all IP addresses for a given mx record, needs to be called for each mx record in DomainData
-    private void getDnsRecords(DomainData dd,String mxDomainName){
+    private void getDnsRecords(DomainData dd,String mxDomainName) {
+        if (!mxDomainName.isEmpty()) {
+            try {
 
-        try {
-            lookup = new Lookup(mxDomainName, Type.A);
-        } catch (TextParseException e) {
-            logger.log(Level.SEVERE,"Could not look up domain!");
-        }
+                lookup = new Lookup(mxDomainName, Type.A);
 
-        Record[] aRecords = lookup.run();
-        if (aRecords != null) {
-            for (Record rec : aRecords) {
-                ARecord a = (ARecord) rec;
-                dd.getMxRecordDataByName(mxDomainName).addInetSockeAddress(a.getAddress().getHostAddress());
-
+            } catch (TextParseException e) {
+                logger.log(Level.SEVERE, "Could not look up domain for : " + mxDomainName + " !");
             }
-        }
 
+            Record[] aRecords = lookup.run();
+            if (aRecords != null) {
+                for (Record rec : aRecords) {
+                    ARecord a = (ARecord) rec;
+                    dd.getMxRecordDataByName(mxDomainName).addInetSockeAddress(a.getAddress().getHostAddress());
+
+                }
+            }
+
+        }
     }
 
 }
