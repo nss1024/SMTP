@@ -26,6 +26,7 @@ public class Lookup {
 
     public Future<DomainData> lookupMXRecord(String domainName){
         if(lookupThreadPool!=null){
+            System.out.println("Doing mx lookup for: "+domainName);
             return lookupThreadPool.submit(new DomainResolver(domainName));
         }
         return null;

@@ -16,7 +16,7 @@ public class SessionContext {
     private BufferedWriter writer;
     private List<SessionState> validNextStates;
     private SessionState currentState;
-    private String myDomain;
+    private List<String> localDomains;
     private String clientDomain;
     private SMTPEmail smtpEmail;
     private boolean isReceivingData;
@@ -25,11 +25,11 @@ public class SessionContext {
 
     private SessionContext(){}
 
-    public SessionContext(Socket socket,BufferedReader reader, BufferedWriter writer, String myDomain) {
+    public SessionContext(Socket socket,BufferedReader reader, BufferedWriter writer, List<String> domains) {
         this.socket = socket;
         this.reader = reader;
         this.writer = writer;
-        this.myDomain = myDomain;
+        this.localDomains=domains;
         this.isReceivingData=false;
         this.isQuitting=false;
         this.smtpEmail = new SMTPEmail();
@@ -66,10 +66,6 @@ public class SessionContext {
 
     public BufferedWriter getWriter() {
         return writer;
-    }
-
-    public String getMyDomain() {
-        return myDomain;
     }
 
     public SMTPEmail getSmtpEmail() {
@@ -120,5 +116,13 @@ public class SessionContext {
 
     public void setEmailMetaData(EmailMetaData emailMetaData) {
         this.emailMetaData = emailMetaData;
+    }
+
+    public List<String> getLocalDomains() {
+        return localDomains;
+    }
+
+    public void setLocalDomains(List<String> localDomains) {
+        this.localDomains = localDomains;
     }
 }

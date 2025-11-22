@@ -1,105 +1,72 @@
 package serverConfigs;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ServerConfigs {
+public final class ServerConfigs {
 
-    private List<String> localDomains;
-    private int port;
-    private int serverThreadCount;
-    private int mdaThreadCount;
-    private int resolverThreadCount;
-    private int failedConnectionsTolerance;
-    private Path mainSavePath;
-    private Path relayPath;
-    private Path metaPath;
+    private final List<String> localDomains;
+    private final int port;
+    private final int serverThreadCount;
+    private final int mdaThreadCount;
+    private final int resolverThreadCount;
+    private final int failedConnectionsTolerance;
+    private final Path mainSavePath;
+    private final Path relayPath;
+    private final Path metaPath;
 
-    public ServerConfigs(){}
-
-    public List<String> getLocalDomains() {
-        return localDomains;
+    private ServerConfigs(Builder b) {
+        this.localDomains = b.localDomains;
+        this.port = b.port;
+        this.serverThreadCount = b.serverThreadCount;
+        this.mdaThreadCount = b.mdaThreadCount;
+        this.resolverThreadCount = b.resolverThreadCount;
+        this.failedConnectionsTolerance = b.failedConnectionsTolerance;
+        this.mainSavePath = b.mainSavePath;
+        this.relayPath = b.relayPath;
+        this.metaPath = b.metaPath;
     }
 
-    public void setLocalDomains(List<String> localDomain) {
-        this.localDomains = localDomain;
-    }
+    public List<String> getLocalDomains() { return localDomains; }
+    public int getPort() { return port; }
+    public int getServerThreadCount() { return serverThreadCount; }
+    public int getMdaThreadCount() { return mdaThreadCount; }
+    public int getResolverThreadCount() { return resolverThreadCount; }
+    public int getFailedConnectionsTolerance() { return failedConnectionsTolerance; }
+    public Path getMainSavePath() { return mainSavePath; }
+    public Path getRelayPath() { return relayPath; }
+    public Path getMetaPath() { return metaPath; }
 
-    public void addLocalDomain(String domain){
-        if(localDomains==null){
-            localDomains=new ArrayList<>();
+    public static class Builder {
+        private List<String> localDomains;
+        private int port;
+        private int serverThreadCount;
+        private int mdaThreadCount;
+        private int resolverThreadCount;
+        private int failedConnectionsTolerance;
+        private Path mainSavePath;
+        private Path relayPath;
+        private Path metaPath;
+
+        public Builder localDomains(List<String> d) {
+            this.localDomains = new ArrayList<>();
+            for(String s:d){
+                this.localDomains.add(s.trim());
+            }
+            return this;
         }
-        localDomains.add(domain);
-    }
+        public Builder port(int port) { this.port = port; return this; }
+        public Builder serverThreadCount(int n) { this.serverThreadCount = n; return this; }
+        public Builder mdaThreadCount(int n) { this.mdaThreadCount = n; return this; }
+        public Builder resolverThreadCount(int n) { this.resolverThreadCount = n; return this; }
+        public Builder failedConnectionsTolerance(int n) { this.failedConnectionsTolerance = n; return this; }
+        public Builder mainSavePath(Path p) { this.mainSavePath = p; return this; }
+        public Builder relayPath(Path p) { this.relayPath = p; return this; }
+        public Builder metaPath(Path p) { this.metaPath = p; return this; }
 
-
-    public int getPort() {
-        return port;
-    }
-
-    public void setPort(int port) {
-        this.port = port;
-    }
-
-    public int getServerThreadCount() {
-        return serverThreadCount;
-    }
-
-    public void setServerThreadCount(int serverThreadCount) {
-        this.serverThreadCount = serverThreadCount;
-    }
-
-    public int getMdaThreadCount() {
-        return mdaThreadCount;
-    }
-
-    public void setMdaThreadCount(int mdaThreadCount) {
-        this.mdaThreadCount = mdaThreadCount;
-    }
-
-    public int getResolverThreadCount() {
-        return resolverThreadCount;
-    }
-
-    public void setResolverThreadCount(int resolverThreadCount) {
-        this.resolverThreadCount = resolverThreadCount;
-    }
-
-    public int getFailedConnectionsTolerance() {
-        return failedConnectionsTolerance;
-    }
-
-    public void setFailedConnectionsTolerance(int failedConnectionsTolerance) {
-        this.failedConnectionsTolerance = failedConnectionsTolerance;
-    }
-
-    public Path getMainSavePath() {
-        return mainSavePath;
-    }
-
-    public void setMainSavePath(String savePath) {
-        this.mainSavePath= Paths.get(savePath);
-    }
-
-    public void setMainSavePath(String... savePath) {
-        this.mainSavePath= Paths.get(savePath);
-    }
-
-    public Path getRelayPath() {
-        return relayPath;
-    }
-
-    public void setRelayPath(Path relayPath) {
-        this.relayPath = relayPath;
-    }
-
-    public Path getMetaPath() {
-        return metaPath;
-    }
-
-    public void setMetaPath(Path metaPath) {
-        this.metaPath = metaPath;
+        public ServerConfigs build() {
+            return new ServerConfigs(this);
+        }
     }
 }

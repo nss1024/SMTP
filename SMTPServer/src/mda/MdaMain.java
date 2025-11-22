@@ -1,7 +1,9 @@
 package mda;
 
 import commands.SMTPEmail;
+import commands.SessionContext;
 import resolver.Lookup;
+import serverConfigs.ServerConfigs;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -13,17 +15,21 @@ import java.util.logging.Logger;
 public class MdaMain {
     private Logger logger = Logger.getLogger(this.getClass().getSimpleName());
     private ThreadPoolExecutor mdathreadPool;
-    private int noOfthreads = 2;
-    private Path savePath;
-    private Path relayPath;
-    private Path metaPath;
+    private int noOfthreads = 0;
+    private final Path savePath;
+    private final Path relayPath;
+    private final Path metaPath;
     private Lookup lookup;
+    private ServerConfigs sc;
+    SessionContext context;
 
 
-    public MdaMain(){
-        this.savePath= Paths.get("C:", "dev", "FileStore", "local");
-        this.relayPath= Paths.get("C:", "dev", "FileStore", "relay");
-        this.metaPath= Paths.get("C:", "dev", "FileStore", "relay","meta");
+    public MdaMain(ServerConfigs sc){
+        this.sc=sc;
+        this.savePath= sc.getMainSavePath();
+        this.relayPath= sc.getRelayPath();
+        this.metaPath= sc.getMetaPath();
+        this.noOfthreads=sc.getMdaThreadCount();
     }
 
 
@@ -41,17 +47,17 @@ public class MdaMain {
         lookup=new Lookup();
         lookup.start();
     }
-    //TODO: each domain shoudl have it's own subdir in savePath, implement multi domain
+
     public void saveEmail(SMTPEmail email){
             mdathreadPool.submit(new SaveEmail(email,savePath));
     }
 
-    public void setLookup() {
+    public void setLookup(Lookup lookup) {
         this.lookup = lookup;
     }
 
-    public void relayEmail(SMTPEmail email, EmailMetaData emailMetaData){
-        mdathreadPool.submit(new RelayEmail(email,emailMetaData,lookup,relayPath,metaPath));
+    public void relayEmail(SessionContext context){
+        mdathreadPool.submit(new RelayEmail(context,lookup,relayPath,metaPath));
     }
 
 }

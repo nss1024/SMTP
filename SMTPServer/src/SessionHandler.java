@@ -2,12 +2,14 @@ import commands.CommandRegistry;
 import commands.SessionContext;
 import commands.SmtpCommand;
 import mda.MdaMain;
+import serverConfigs.ServerConfigs;
 import utils.SMTPUtils;
 import utils.SessionState;
 import utils.SmtpMessage;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.logging.Level;
@@ -23,24 +25,27 @@ public class SessionHandler implements Runnable{
     private List<String> localDomains;
     private String opCode;
     private StringBuilder emailBody=new StringBuilder();
-    MdaMain mdaMain;
+    private MdaMain mdaMain;
+    private ServerConfigs conf;
 
 
-    SessionHandler(Socket s,MdaMain mdaMain){
+    SessionHandler(Socket s,MdaMain mdaMain, ServerConfigs conf){
         this.socket=s;
         this.mdaMain=mdaMain;
+        this.conf=conf;
+        this.localDomains=conf.getLocalDomains();
     }
 
     @Override
     public void run() {
-        loadDummyDomains();
+
         try {
             reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        sc = new SessionContext(socket,reader,writer,myDomain);
+        sc = new SessionContext(socket,reader,writer,localDomains);
         SMTPUtils.sendMessage(socket,writer, SmtpMessage.GREET.getFullText());
         sc.setCurrentState(SessionState.INIT);
         sc.getValidNextStates().add(SessionState.HELO);
@@ -59,20 +64,19 @@ public class SessionHandler implements Runnable{
 
                         List<String> allRecipients = new ArrayList<>(sc.getSmtpEmail().getToList());
                         List<String> externalRecipients = new ArrayList<>();
-
+                        System.out.println(Arrays.toString(localDomains.toArray()));
                         for (String rcpt : allRecipients) {
-                            for(String domain:localDomains) {//cjeck for multiple local domains
-                                if (rcpt.endsWith("@" + domain)) {
+                                if (localDomains.contains(rcpt.split("@")[1].trim())) {
                                     mdaMain.saveEmail(sc.getSmtpEmail()); // local delivery per address
                                 } else {
                                     externalRecipients.add(rcpt);
                                 }
-                            }
                         }
 
                         if (!externalRecipients.isEmpty()) {
                             sc.getSmtpEmail().setToList(externalRecipients); // remove local addresses
-                            mdaMain.relayEmail(sc.getSmtpEmail(), sc.getEmailMetaData());
+                            System.out.println(sc.getEmailMetaData());
+                            mdaMain.relayEmail(sc);
                         }
 
                         SMTPUtils.sendMessage(socket, writer, SmtpMessage.MSG_RECEIVED.getFullText());
@@ -109,13 +113,5 @@ public class SessionHandler implements Runnable{
         }
     }
 
-    //for testing only, data will come from either a config file or database
-    private void loadDummyDomains(){
-        localDomains = new ArrayList<>();
-        localDomains.add("myEmails.com");
-        localDomains.add("norbEmail.com");
-        localDomains.add("jucEmail.com");
-
-    }
 
 }

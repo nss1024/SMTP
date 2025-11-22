@@ -1,6 +1,7 @@
 package mda;
 
 import commands.SMTPEmail;
+import commands.SessionContext;
 import resolver.Lookup;
 
 import java.io.IOException;
@@ -24,12 +25,12 @@ public class RelayEmail implements Runnable{
     private Path metaDirectory;
     private  EmailMetaData emailMetaData;
     private Lookup lookup;
+    private SessionContext sc;
 
-    RelayEmail(SMTPEmail email, EmailMetaData emailMetaData,Lookup lookup, Path relayDirectory, Path metaDirectiry){
-        this.smtpEmail=email;
+    RelayEmail(SessionContext context,Lookup lookup, Path relayDirectory, Path metaDirectory){
+        this.smtpEmail=context.getSmtpEmail();
         this.relayDirectory=relayDirectory;
-        this.emailMetaData = emailMetaData;
-        this.metaDirectory=metaDirectiry;
+        this.metaDirectory=metaDirectory;
         this.lookup=lookup;
     }
 
@@ -43,15 +44,14 @@ public class RelayEmail implements Runnable{
 
         try{
             Files.write(fullPath,smtpEmail.toEmlFormat().getBytes(StandardCharsets.UTF_8));
-            Files.write(metaPath,emailMetaData.toFileFormat().getBytes(StandardCharsets.UTF_8));
-
-
         } catch (IOException e) {
             logger.log(Level.WARNING,"Failed to save email to disk! "+e.getMessage());
         }
 
         try{
-
+            emailMetaData=new EmailMetaData(fileUudi);
+            getDomains();
+            System.out.println("Email metadata saved: "+emailMetaData.toFileFormat());
             Files.write(metaPath,emailMetaData.toFileFormat().getBytes(StandardCharsets.UTF_8));
 
         } catch (IOException e) {
@@ -64,6 +64,7 @@ public class RelayEmail implements Runnable{
         for(String dom:domains){
             emailMetaData.addDomain((DomainData) lookup.lookupMXRecord(dom));
         }
+        System.out.println("Email metadata: "+emailMetaData.toFileFormat());
     }
 
 }

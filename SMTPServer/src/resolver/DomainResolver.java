@@ -46,6 +46,7 @@ public class DomainResolver implements Callable<DomainData> {
                 MXRecord mx = (MXRecord) r;
                 String host = mx.getTarget().toString(true);
                 if (host.endsWith(".")) host = host.substring(0, host.length() - 1);
+                System.out.println("Host: "+host);
                 dd.addMxRecord(new MxRecordData(host,mx.getPriority()));
             }
         }

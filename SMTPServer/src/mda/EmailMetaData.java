@@ -9,6 +9,10 @@ public class EmailMetaData {
     private String emailId;
     private List<DomainData> destinations=new ArrayList<>();
 
+    public EmailMetaData( String emailId){
+        this.emailId=emailId;
+
+    }
 
     public EmailMetaData( String emailId,DomainData... domainData){
         this.emailId=emailId;

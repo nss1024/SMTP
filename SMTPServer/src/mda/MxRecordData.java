@@ -19,8 +19,7 @@ public class MxRecordData {
     public MxRecordData(String hostname, int priority){
         this.hostname=hostname;
         this.priority=priority;
-
-
+        System.out.println("New MX record created for: "+hostname);
     }
 
     public int getSmtpPort() {

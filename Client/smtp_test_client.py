@@ -4,11 +4,11 @@ from email.mime.multipart import MIMEMultipart
 
 # SMTP server config
 HOST = "127.0.0.1"
-PORT = 8029  # or your server port
+PORT = 8025  # or your server port
 
 # Email info
 sender = "alice@example.com"
-recipients = ["bob@example.com","simon@myserver.com"]
+recipients = ["bob@example.com","simon@myserver.com","n.simon@hotmail.co.uk"]
 subject = "Test Email"
 body = "Hello Bob, this is a test email from Python client."
 
