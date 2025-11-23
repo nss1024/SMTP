@@ -2,17 +2,18 @@ package resolver;
 
 import mda.DomainData;
 import mda.MxRecordData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xbill.DNS.*;
 import org.xbill.DNS.Lookup;
 
 import java.util.concurrent.Callable;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 public class DomainResolver implements Callable<DomainData> {
     String domanName;
     org.xbill.DNS.Lookup lookup = null;
-    private Logger logger = Logger.getLogger(this.getClass().getSimpleName());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public DomainResolver(String domainName){
         this.domanName=domainName;
@@ -35,7 +36,7 @@ public class DomainResolver implements Callable<DomainData> {
         try {
             lookup = new Lookup(domainName, Type.MX);
         } catch (TextParseException e) {
-            logger.log(Level.SEVERE,"Could not look up mx record!");
+            logger.warn("Could not look up mx record!");
         }
         Record[] records = lookup.run();
 
@@ -46,7 +47,6 @@ public class DomainResolver implements Callable<DomainData> {
                 MXRecord mx = (MXRecord) r;
                 String host = mx.getTarget().toString(true);
                 if (host.endsWith(".")) host = host.substring(0, host.length() - 1);
-                System.out.println("Host: "+host);
                 dd.addMxRecord(new MxRecordData(host,mx.getPriority()));
             }
         }
@@ -60,7 +60,7 @@ public class DomainResolver implements Callable<DomainData> {
                 lookup = new Lookup(mxDomainName, Type.A);
 
             } catch (TextParseException e) {
-                logger.log(Level.SEVERE, "Could not look up domain for : " + mxDomainName + " !");
+                logger.warn("Could not look up domain for : {} !",mxDomainName);
             }
 
             Record[] aRecords = lookup.run();

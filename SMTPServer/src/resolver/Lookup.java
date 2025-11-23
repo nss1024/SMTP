@@ -5,16 +5,17 @@
 package resolver;
 
 import mda.DomainData;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.logging.Logger;
 
 public class Lookup {
     private int numberOfthreads = 4;
     private ExecutorService lookupThreadPool;
-    private Logger logger = Logger.getLogger(this.getClass().getSimpleName());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public Lookup(){
 
@@ -26,7 +27,6 @@ public class Lookup {
 
     public Future<DomainData> lookupMXRecord(String domainName){
         if(lookupThreadPool!=null){
-            System.out.println("Doing mx lookup for: "+domainName);
             return lookupThreadPool.submit(new DomainResolver(domainName));
         }
         return null;

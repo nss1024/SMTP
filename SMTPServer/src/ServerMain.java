@@ -1,15 +1,16 @@
 import mda.MdaMain;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import serverConfigs.ServerConfigs;
 
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+;
 
 public class ServerMain {
-    private final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private int listeningPort=0;
     private ServerSocket serverSocket = null;
     ThreadPoolExecutor tp = null;
@@ -30,9 +31,9 @@ public class ServerMain {
     private void startServer(){
         try {
             serverSocket=new ServerSocket(this.listeningPort);
-            logger.log(Level.INFO,"Server listening on port "+this.listeningPort);
+            logger.info("Server listening on port {}",this.listeningPort);
         } catch (IOException e) {
-            logger.log(Level.SEVERE,"Failed to start a ServerSocke instance!");
+            logger.error("Failed to start a ServerSocke instance!");
             throw new RuntimeException(e);
         }
     }
@@ -42,7 +43,7 @@ public class ServerMain {
             try {
                 serverSocket.close();
             } catch (IOException e) {
-                logger.log(Level.WARNING,"Failed to close ServerSocket!");
+                logger.warn("Failed to close ServerSocket!");
             }
         }
     }
@@ -67,7 +68,7 @@ public class ServerMain {
                     tp.submit(new SessionHandler(soc,mdaMain,sc));
 
                 } catch (IOException e) {
-                    logger.log(Level.WARNING,"Failed to accept connection request!" );
+                    logger.warn("Failed to accept connection request!");
                     failedConnectionsCounter++;
                     if(failedConnectionsCounter==FAILED_CONNECTIONS_TOLERANCE){
                         stopServer();

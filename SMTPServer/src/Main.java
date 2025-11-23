@@ -1,7 +1,6 @@
-import mda.DomainData;
-import mda.EmailMetaData;
+
 import mda.MdaMain;
-import mda.MxRecordData;
+
 import resolver.Lookup;
 import serverConfigs.LoadConfigs;
 import serverConfigs.ServerConfigs;
@@ -19,5 +18,9 @@ public class Main {
         mdaMain.setLookup(lookup);
         ServerMain serverMain = new ServerMain(mdaMain,CONFIGS);
         serverMain.start();
+        System.out.println(
+                LoadConfigs.class.getClassLoader().getResource("logback.xml")
+        );
+
     }
 }

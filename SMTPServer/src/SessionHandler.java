@@ -2,6 +2,8 @@ import commands.CommandRegistry;
 import commands.SessionContext;
 import commands.SmtpCommand;
 import mda.MdaMain;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import serverConfigs.ServerConfigs;
 import utils.SMTPUtils;
 import utils.SessionState;
@@ -9,19 +11,16 @@ import utils.SmtpMessage;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 public class SessionHandler implements Runnable{
-    private final Logger logger = Logger.getLogger(this.getClass().getSimpleName());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private Socket socket=null;
     private BufferedWriter writer;
     private BufferedReader reader;
     private SessionContext sc;
-    private String myDomain = "myserver.com";
     private List<String> localDomains;
     private String opCode;
     private StringBuilder emailBody=new StringBuilder();
@@ -54,7 +53,7 @@ public class SessionHandler implements Runnable{
         try {
             String line;
             while ((line = sc.getReader().readLine()) != null) {
-                logger.log(Level.INFO, line);
+                logger.trace(line);
                 if(sc.isReceivingData()){
                     if(!line.equals(".")){
                         emailBody.append(line).append("\r\n");
@@ -64,7 +63,6 @@ public class SessionHandler implements Runnable{
 
                         List<String> allRecipients = new ArrayList<>(sc.getSmtpEmail().getToList());
                         List<String> externalRecipients = new ArrayList<>();
-                        System.out.println(Arrays.toString(localDomains.toArray()));
                         for (String rcpt : allRecipients) {
                                 if (localDomains.contains(rcpt.split("@")[1].trim())) {
                                     mdaMain.saveEmail(sc.getSmtpEmail()); // local delivery per address
@@ -74,8 +72,7 @@ public class SessionHandler implements Runnable{
                         }
 
                         if (!externalRecipients.isEmpty()) {
-                            sc.getSmtpEmail().setToList(externalRecipients); // remove local addresses
-                            System.out.println(sc.getEmailMetaData());
+                            sc.getSmtpEmail().setToList(externalRecipients);// remove local addresses
                             mdaMain.relayEmail(sc);
                         }
 
@@ -102,13 +99,13 @@ public class SessionHandler implements Runnable{
                 }
             }
         } catch (IOException e) {
-            logger.log(Level.WARNING, "Error reading socket input", e);
+            logger.error("Error reading socket input {}", e.getMessage());
         } finally{
             try {
                 sc.getReader().close();
                 socket.close();
             }catch(IOException e){
-                logger.log(Level.WARNING,"Failed to close reader / socket!");
+                logger.warn("Failed to close reader / socket! {}",e.getMessage());
             }
         }
     }

@@ -1,16 +1,17 @@
 package commands;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import utils.SMTPUtils;
 import utils.SessionState;
 import utils.SmtpMessage;
 
 import java.io.IOException;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class DataCommand implements SmtpCommand{
 
-    private Logger logger = Logger.getLogger(this.getClass().getSimpleName());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public void execute(SessionContext sc, String line) throws IOException {
@@ -19,7 +20,7 @@ public class DataCommand implements SmtpCommand{
             SMTPUtils.sendMessage(sc.getSocket(),sc.getWriter(), SmtpMessage.BAD_SEQUENCE.getFullText());
             return;
         }
-        logger.log(Level.INFO, "DATA received");
+        logger.trace("Data received");
         sc.setReceivingData(true);
         SMTPUtils.updateAcceptableStates(sc.getValidNextStates(), SessionState.DATA_COMPLETE);
         SMTPUtils.sendMessage(sc.getSocket(), sc.getWriter(), SmtpMessage.START_MAIL_INPUT.getFullText());

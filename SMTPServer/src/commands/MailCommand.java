@@ -1,15 +1,16 @@
 package commands;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import utils.SMTPUtils;
 import utils.SessionState;
 import utils.SmtpMessage;
 
 import java.io.IOException;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class MailCommand implements SmtpCommand{
-    private Logger logger = Logger.getLogger(this.getClass().getSimpleName());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     public MailCommand(){
@@ -18,7 +19,7 @@ public class MailCommand implements SmtpCommand{
 
     @Override
     public void execute(SessionContext sc, String line) throws IOException {
-        logger.log(Level.INFO, "MAIL received");
+        logger.trace("MAIL received");
         String from = SMTPUtils.getEmailAddress(line);
         if(!SMTPUtils.validateEmailAddress(from)){
             SMTPUtils.sendMessage(sc.getSocket(),sc.getWriter(),SmtpMessage.BAD_SENDER_ADDRESS.getFullText());

@@ -2,6 +2,8 @@ package mda;
 
 import commands.SMTPEmail;
 import commands.SessionContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import resolver.Lookup;
 import serverConfigs.ServerConfigs;
 
@@ -10,10 +12,9 @@ import java.nio.file.Paths;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
 
 public class MdaMain {
-    private Logger logger = Logger.getLogger(this.getClass().getSimpleName());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private ThreadPoolExecutor mdathreadPool;
     private int noOfthreads = 0;
     private final Path savePath;

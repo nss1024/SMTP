@@ -1,15 +1,16 @@
 package commands;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import utils.SMTPUtils;
 import utils.SessionState;
 import utils.SmtpMessage;
 
 import java.io.IOException;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class RcptCommand implements SmtpCommand{
-    private Logger logger = Logger.getLogger(this.getClass().getSimpleName());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public void execute(SessionContext sc, String line) throws IOException {
@@ -19,7 +20,7 @@ public class RcptCommand implements SmtpCommand{
             sc.setCurrentState(SessionState.RCPT_TO_RECEIVED);
             SMTPUtils.updateAcceptableStates(sc.getValidNextStates(), SessionState.RCPT, SessionState.DATA);
             SMTPUtils.sendMessage(sc.getSocket(), sc.getWriter(), SmtpMessage.OK.getFullText());
-            logger.log(Level.INFO, "RCPT received");
+            logger.trace("RCPT received");
         }else{
             sc.setCurrentState(SessionState.RCPT_TO_RECEIVED);
             SMTPUtils.updateAcceptableStates(sc.getValidNextStates(), SessionState.RCPT, SessionState.DATA);

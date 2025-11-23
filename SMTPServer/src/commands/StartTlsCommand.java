@@ -1,5 +1,7 @@
 package commands;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import utils.SMTPUtils;
 import utils.SmtpMessage;
 
@@ -11,11 +13,10 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.KeyStore;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class StartTlsCommand implements SmtpCommand{
 
-    private Logger logger = Logger.getLogger(this.getClass().getSimpleName());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     @Override
     public void execute(SessionContext sc, String line) throws IOException {
 
@@ -50,11 +51,11 @@ public class StartTlsCommand implements SmtpCommand{
 
             // Upgrade the SessionContext connection
             sc.upgradeConnection(sslSocket);
+            logger.trace("Connection successfully upgraded to TLS.");
 
-            logger.log(Level.INFO, "Connection successfully upgraded to TLS.");
 
         } catch (Exception e) {
-            logger.log(Level.WARNING, "Failed to start TLS", e);
+            logger.warn("Failed to start TLS {}", e.getMessage());
             SMTPUtils.sendMessage(sc.getSocket(), sc.getWriter(), SmtpMessage.TLS_FAILURE.getFullText());
         }
 

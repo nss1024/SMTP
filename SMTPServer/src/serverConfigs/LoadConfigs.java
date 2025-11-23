@@ -1,15 +1,17 @@
 package serverConfigs;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.FileInputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Properties;
-import java.util.logging.Logger;
 
 public final class LoadConfigs {
 
-    private static final Logger logger = Logger.getLogger(LoadConfigs.class.getSimpleName());
+    private static final Logger logger = LoggerFactory.getLogger(LoadConfigs.class);
 
     private LoadConfigs() {} // prevent instantiation
 
@@ -18,7 +20,8 @@ public final class LoadConfigs {
 
         try (FileInputStream fis = new FileInputStream(file.toFile())) {
             props.load(fis);
-            logger.info("Loaded config from: " + file);
+            logger.info("Loaded config from: {}", file);
+
         } catch (Exception e) {
             throw new RuntimeException("Could not load config file: " + file, e);
         }

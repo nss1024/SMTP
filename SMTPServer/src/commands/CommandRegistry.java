@@ -1,11 +1,6 @@
 package commands;
 
-import utils.SessionState;
-
-import java.io.BufferedWriter;
-import java.net.Socket;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public enum CommandRegistry {

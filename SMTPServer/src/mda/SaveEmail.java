@@ -1,20 +1,19 @@
 package mda;
 
 import commands.SMTPEmail;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileWriter;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 public class SaveEmail implements Runnable {
-
-    private Logger logger = Logger.getLogger(this.getClass().getSimpleName());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private SMTPEmail smtpEmail;
     private String fileName;
     private final String fileExtension = ".eml";
@@ -33,7 +32,7 @@ public class SaveEmail implements Runnable {
         try{
             Files.write(fullPath,smtpEmail.toEmlFormat().getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
-            logger.log(Level.WARNING,"Failed to save email to disk! "+e.getMessage());
+            logger.warn("Failed to save email to disk! {}",e.getMessage());
         }
 
     }

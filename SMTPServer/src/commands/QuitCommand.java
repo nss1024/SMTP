@@ -1,21 +1,22 @@
 package commands;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import utils.SMTPUtils;
 import utils.SmtpMessage;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class QuitCommand implements SmtpCommand{
 
-    private Logger logger = Logger.getLogger(this.getClass().getSimpleName());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
     @Override
     public void execute(SessionContext sc, String line) throws IOException {
-        logger.log(Level.INFO, "QUIT received");
+        logger.trace("QUIT received");
         SMTPUtils.sendMessage(sc.getSocket(),sc.getWriter(), SmtpMessage.CLOSING_TRANSMISSION.getFullText());
         closeWriter(sc.getWriter());
         sc.setQuitting(true);
@@ -27,7 +28,7 @@ public class QuitCommand implements SmtpCommand{
                 writer.flush();
                 writer.close();
             } catch (IOException e) {
-                logger.log(Level.WARNING, "Failed to close BufferedWriter", e);
+                logger.warn("Failed to close BufferedWriter {}", e.getMessage());
             }
         }
 

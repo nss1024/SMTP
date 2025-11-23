@@ -2,6 +2,8 @@ package mda;
 
 import commands.SMTPEmail;
 import commands.SessionContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import resolver.Lookup;
 
 import java.io.IOException;
@@ -11,12 +13,11 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Future;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 public class RelayEmail implements Runnable{
-    private Logger logger = Logger.getLogger(this.getClass().getSimpleName());
-    private SMTPEmail smtpEmail;
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final SMTPEmail smtpEmail;
     private String fileName;
     private String metaName;
     private  String fileUudi;
@@ -46,17 +47,16 @@ public class RelayEmail implements Runnable{
         try{
             Files.write(fullPath,smtpEmail.toEmlFormat().getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
-            logger.log(Level.WARNING,"Failed to save email to disk! "+e.getMessage());
+            logger.warn("Failed to save email to disk! {}",e.getMessage());
         }
 
         try{
             emailMetaData=new EmailMetaData(fileUudi);
             getDomains();
-            System.out.println("Email metadata saved: "+emailMetaData.toFileFormat());
             Files.write(metaPath,emailMetaData.toFileFormat().getBytes(StandardCharsets.UTF_8));
 
         } catch (IOException e) {
-            logger.log(Level.WARNING,"Failed to save meta data to disk! "+e.getMessage());
+            logger.warn("Failed to save meta data to disk! {}",e.getMessage());
         }
     }
 
@@ -68,10 +68,9 @@ public class RelayEmail implements Runnable{
                 DomainData dd = future.get();
                 emailMetaData.addDomain(dd);
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.warn("Failed to get domains {}",e.getMessage());
             }
         }
-        System.out.println("Email metadata: "+ emailMetaData.toFileFormat());
     }
 
 }

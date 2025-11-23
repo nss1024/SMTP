@@ -1,18 +1,17 @@
 package commands;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import utils.SMTPUtils;
 import utils.SessionState;
 import utils.SmtpMessage;
 
-import java.io.BufferedWriter;
+
 import java.io.IOException;
-import java.net.Socket;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 public class HeloCommand implements SmtpCommand {
-    private Logger logger = Logger.getLogger(this.getClass().getSimpleName());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
 
 
@@ -22,8 +21,7 @@ public class HeloCommand implements SmtpCommand {
 
     @Override
     public void execute(SessionContext sc, String line) throws IOException {
-
-        logger.log(Level.INFO, "HELO received");
+        logger.trace("HELO received");
         sc.setCurrentState(SessionState.HELO_RECEIVED);
         SMTPUtils.updateAcceptableStates(sc.getValidNextStates(), SessionState.MAIL);
         sc.setClientDomain(SMTPUtils.getData(line));
