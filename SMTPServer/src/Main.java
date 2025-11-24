@@ -9,7 +9,6 @@ import java.nio.file.Paths;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello, World!");
         ServerConfigs CONFIGS =  LoadConfigs.load(Paths.get("C:/dev/FileStore/smtp.properties"));
         Lookup lookup=new Lookup();
         lookup.start();
@@ -17,10 +16,6 @@ public class Main {
         mdaMain.start();
         mdaMain.setLookup(lookup);
         ServerMain serverMain = new ServerMain(mdaMain,CONFIGS);
-        serverMain.start();
-        System.out.println(
-                LoadConfigs.class.getClassLoader().getResource("logback.xml")
-        );
-
+        serverMain.start();    
     }
 }
