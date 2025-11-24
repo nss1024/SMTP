@@ -1,3 +1,7 @@
+/*This saves emails destined t local recipients.
+ *It saves emails to disk
+ */
+
 package mda;
 
 import commands.SMTPEmail;

@@ -1,3 +1,7 @@
+/*Holds loaded configuration data, object of this class is passed around
+ *main parts of the application where config data is required
+ *
+ */
 package serverConfigs;
 
 import java.nio.file.Path;

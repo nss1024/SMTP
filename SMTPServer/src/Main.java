@@ -16,6 +16,6 @@ public class Main {
         mdaMain.start();
         mdaMain.setLookup(lookup);
         ServerMain serverMain = new ServerMain(mdaMain,CONFIGS);
-        serverMain.start();    
+        serverMain.start();
     }
 }

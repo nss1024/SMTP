@@ -1,3 +1,9 @@
+/* This class is responsible for saving emails that are to be relayed to disk.
+ * It launched the MX and domain lookups for each recipient domain that arrived in an RCPT message
+ * It saves emails and metadata relating to those email in separate folders, but with the same name to make
+ * retrieval easier.
+ *
+ */
 package mda;
 
 import commands.SMTPEmail;

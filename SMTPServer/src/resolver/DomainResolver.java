@@ -1,3 +1,10 @@
+/*Domain resolver uses dnsJava to perform the actual MX lookups and domain resolution for
+ *domain names passed to it. It creates a domain data object that holds all information relating to a
+ * specific domain recovered from a RCPT address (i.e. gmail.com)
+ * The DomainData is populated here by MXRecordDdata, a data structure that holds data for every domain
+ * returned by the MX lookup (i.e. gmail-smtp-in.l.google.com and IPs relating to that domain)
+ *
+ */
 package resolver;
 
 import mda.DomainData;

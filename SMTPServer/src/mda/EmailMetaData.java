@@ -1,3 +1,8 @@
+/*Email Metadata holds all data relating to an email, not received in a message
+ *Domain relevant data (MX records, DNS data) are saved here
+ *When all metadata are gathered this class produces the contents of the metadata file that is to be written to disk.
+ *
+ */
 package mda;
 
 

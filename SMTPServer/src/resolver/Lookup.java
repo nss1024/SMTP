@@ -1,4 +1,5 @@
-/*Runs a thread pool to perform
+/*This class is responsible for running a threadpool that look after domain resolution
+ * Used by the mda when an email needs to be relayed, requests for MX and DNS resolution will come here
  *
  */
 
