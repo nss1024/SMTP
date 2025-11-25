@@ -1,3 +1,6 @@
+/*Class to handle the initial HELO command
+ *
+ */
 package commands;
 
 import org.slf4j.Logger;

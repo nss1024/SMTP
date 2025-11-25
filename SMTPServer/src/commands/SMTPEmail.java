@@ -1,3 +1,9 @@
+/* Internal representation of an email
+ * Holds all information received from the client
+ * Is saved to disk once Data commad finishes receiving, but before
+ * confirmation is sent to client.
+ *
+ */
 package commands;
 
 

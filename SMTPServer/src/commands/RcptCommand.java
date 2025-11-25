@@ -1,3 +1,8 @@
+/*Class handles RCPT command and saves each recipient to the SMTP Email
+ * RCPT addresses are evaluated before saving to ensure they meet requirements (in format of XXX@YYY.ZZZ).
+ *
+ */
+
 package commands;
 
 import org.slf4j.Logger;

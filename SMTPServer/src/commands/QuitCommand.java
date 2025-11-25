@@ -1,3 +1,7 @@
+/*Class handles QUIT command received from client.
+ *
+ */
+
 package commands;
 
 import org.slf4j.Logger;

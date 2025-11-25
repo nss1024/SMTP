@@ -1,3 +1,8 @@
+/*This class handles the DATA command received from the client.
+ *It sets a flag in the session context that enables data capture.
+ *
+ */
+
 package commands;
 
 import org.slf4j.Logger;
@@ -7,7 +12,7 @@ import utils.SessionState;
 import utils.SmtpMessage;
 
 import java.io.IOException;
-import java.util.logging.Level;
+
 
 public class DataCommand implements SmtpCommand{
 

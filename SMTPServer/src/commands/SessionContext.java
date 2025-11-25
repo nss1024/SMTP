@@ -1,3 +1,8 @@
+/* The session context hold all session relevant information.
+ *The program relies on the session context to move through states and
+ * update necessary data.
+ */
+
 package commands;
 
 import mda.EmailMetaData;

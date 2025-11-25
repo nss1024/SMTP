@@ -1,3 +1,8 @@
+/* Enum to represent a singleton of the command registry.
+ * All available command classes must be registered here.
+ *
+ */
+
 package commands;
 
 import java.util.HashMap;

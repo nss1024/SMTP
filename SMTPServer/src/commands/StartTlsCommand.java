@@ -1,3 +1,7 @@
+/*Class responsible for upgrading the connection to a secure encrypted connection.
+ *It upgrades the socket in use to a secure socket.
+ */
+
 package commands;
 
 import org.slf4j.Logger;

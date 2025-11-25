@@ -1,3 +1,6 @@
+/*Class to handle MAIL command.
+ *
+ */
 package commands;
 
 import org.slf4j.Logger;
