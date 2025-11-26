@@ -1,3 +1,7 @@
+/*Enu to hold SMTP messages sent to connecting clients
+ *
+ */
+
 package utils;
 
 public enum SmtpMessage {

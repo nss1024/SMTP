@@ -1,4 +1,6 @@
-
+/*Mai class of application, loads classes that have their own thread pools.
+ *
+ */
 import mda.MdaMain;
 
 import resolver.Lookup;

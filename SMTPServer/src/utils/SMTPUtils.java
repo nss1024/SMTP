@@ -1,3 +1,7 @@
+/*Utility class to update states, send messages and validation.
+ *
+ */
+
 package utils;
 
 import java.io.BufferedWriter;

@@ -1,3 +1,9 @@
+/*The starting pont of the application logic,
+ * This class is responsible for accepting inbound connections and starting the sate handler class.
+ *
+ *
+ */
+
 import mda.MdaMain;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

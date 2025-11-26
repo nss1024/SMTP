@@ -1,3 +1,8 @@
+/*Enum holding SMTP states, these are used to indicate current state of a transaction and
+ *to specify possible next states once a transaction completed.
+ *
+ */
+
 package utils;
 
 public enum SessionState {

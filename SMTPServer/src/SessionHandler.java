@@ -1,3 +1,9 @@
+/* This class handles each session and is responsible for communicating with the client
+ * SMTP state handling is implemented using command protocol
+ * Once a message has been received this class decides whether to save it locally or relay it.
+ *
+ */
+
 import commands.CommandRegistry;
 import commands.SessionContext;
 import commands.SmtpCommand;
