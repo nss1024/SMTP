@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/SMTPServer.iml" filepath="$PROJECT_DIR$/SMTPServer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/smtpSecurityApi/smtpSecurityApi.iml" filepath="$PROJECT_DIR$/smtpSecurityApi/smtpSecurityApi.iml" />
     </modules>
   </component>
 </project>

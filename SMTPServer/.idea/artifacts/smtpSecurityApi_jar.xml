@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="smtpSecurityApi:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/smtpSecurityApi_jar</output-path>
+    <root id="archive" name="smtpSecurityApi.jar">
+      <element id="module-output" name="smtpSecurityApi" />
+    </root>
+  </artifact>
+</component>
