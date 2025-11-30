@@ -1,32 +1,19 @@
 package smtpSecurityApi;
 
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class SecurityContext {
 
-    private String senderIP;
-    private String fromAddress;
-    private String recipientDomain;
-    private boolean isAuthenticated;
-    private SpfContext spfContext;
-    private DkimContext dkimContext;
+    private final Map<String, Object> attributes = new HashMap<>();
 
-    SecurityContext (){}
-
-    public SecurityContext(String senderIP, String recipientDomain, boolean isAuthenticated) {
-        this.senderIP = senderIP;
-        this.recipientDomain = recipientDomain;
-        this.isAuthenticated = isAuthenticated;
+    public void set(String key, Object value) {
+        attributes.put(key, value);
     }
 
-    public String getSenderIP() {
-        return senderIP;
-    }
-
-    public String getRecipientDomain() {
-        return recipientDomain;
-    }
-
-    public boolean isAuthenticated() {
-        return isAuthenticated;
+    @SuppressWarnings("unchecked")
+    public <T> T get(String key) {
+        return (T) attributes.get(key);
     }
 }
